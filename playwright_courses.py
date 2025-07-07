@@ -50,7 +50,7 @@ with sync_playwright() as playwright:
 
     # Проверяем наличие текста Results from the load test pipeline will be displayed here
     wrong_courses_results = page.get_by_test_id('courses-list-empty-view-description-text')
-    expect(wrong_courses_results).to_have_text('There is no results')
+    expect(wrong_courses_results).to_have_text('Results from the load test pipeline will be displayed here')
 
 
     page.wait_for_timeout(5000)
