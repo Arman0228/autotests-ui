@@ -1,55 +1,36 @@
-from playwright.sync_api import sync_playwright, expect
+from playwright.sync_api import expect, Page
 import pytest
+
 
 @pytest.mark.smoke
 @pytest.mark.regression
-def test_empty_courses_list():
-    with sync_playwright() as playwright:
-        # Открываем браузер и создаем новую страницу
-        browser = playwright.chromium.launch(headless=False)
-        context = browser.new_context()
-        page = context.new_page()
+def test_empty_courses_list(chromium_page_with_state: Page):
+    """
+    Тест проверяет, что:
+    1. Отображается заголовок 'Courses'
+    2. Видна иконка 'папка'
+    3. Отображается текст 'There is no results'
+    4. Отображается текст 'Results from the load test pipeline will be displayed here'
+    """
+    # Используем страницу с сохраненным состоянием из фикстуры
+    page = chromium_page_with_state
 
-        page.goto('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/auth/registration')
+    # Переходим на страницу курсов
+    page.goto('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/courses')
 
-        registration_email_input = page.get_by_test_id('registration-form-email-input').locator('input')
-        registration_email_input.fill('test@gmail.com')
+    # Проверяем наличие заголовка 'Courses'
+    courses_title = page.get_by_test_id('courses-list-toolbar-title-text')
+    expect(courses_title).to_be_visible()
+    expect(courses_title).to_have_text('Courses')
 
-        # Заполняем поле Username
-        registration_name_input = page.get_by_test_id('registration-form-username-input').locator('input')
-        registration_name_input.fill('test')
+    # Проверяем иконку 'папка'
+    empty_icon = page.get_by_test_id('courses-list-empty-view-icon')
+    expect(empty_icon).to_be_visible()
 
-        # Заполняем поле Password
-        password_input = page.get_by_test_id('registration-form-password-input').locator('input')
-        password_input.fill('password')
+    # Проверяем текст 'There is no results'
+    empty_title = page.get_by_test_id('courses-list-empty-view-title-text')
+    expect(empty_title).to_have_text('There is no results')
 
-        # Нажимаем на кнопку Registration
-        registration_button = page.get_by_test_id('registration-page-registration-button')
-        registration_button.click()
-
-        context.storage_state(path='browser-state.json')
-
-
-    with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=False)
-        context = browser.new_context(storage_state='browser-state.json')
-        page = context.new_page()
-
-        page.goto('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/courses')
-
-        #Проверяем наличие Заголовок Courses
-        wrong_courses = page.get_by_test_id('courses-list-toolbar-title-text')
-        expect(wrong_courses).to_be_visible()
-        expect(wrong_courses).to_have_text('Courses')
-
-        #Проверяем иконку "папка"
-        wrong_courses_list = page.get_by_test_id('courses-list-empty-view-icon')
-        expect(wrong_courses_list).to_be_visible()
-
-        #Проверяем наличие текста There is no results
-        wrong_courses_results = page.get_by_test_id('courses-list-empty-view-title-text')
-        expect(wrong_courses_results).to_have_text('There is no results')
-
-        # Проверяем наличие текста Results from the load test pipeline will be displayed here
-        wrong_courses_results = page.get_by_test_id('courses-list-empty-view-description-text')
-        expect(wrong_courses_results).to_have_text('Results from the load test pipeline will be displayed here')
+    # Проверяем текст описания
+    empty_description = page.get_by_test_id('courses-list-empty-view-description-text')
+    expect(empty_description).to_have_text('Results from the load test pipeline will be displayed here')
