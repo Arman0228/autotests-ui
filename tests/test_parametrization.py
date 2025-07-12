@@ -44,7 +44,6 @@ users = {
 }
 
 
-def format
 
 
 @pytest.mark.parametrize(
