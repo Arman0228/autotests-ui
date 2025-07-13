@@ -1,26 +1,35 @@
 import pytest
-from playwright.sync_api import sync_playwright, Page, expect
+from playwright.sync_api import expect
+
 
 @pytest.mark.regression
 @pytest.mark.registration
-def test_successful_registration(chromium_page: Page):
+@pytest.mark.parametrize("email,username,password", [
+    ("test1@example.com", "user1", "Password123!"),
+    ("test2@example.com", "user2", "SecurePass456!")
+])
+def test_successful_registration(registration_page, dashboard_page, email, username, password, request):
+    """
+    Параметризованный тест успешной регистрации
+    с правильными ожиданиями и возможностью визуальной проверки
+    """
+    # 1. Заполнение формы регистрации
+    registration_page.visit("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/auth/registration")
+    registration_page.fill_registration_form_email_input(email)
+    registration_page.fill_registration_form_username_input(username)
+    registration_page.fill_registration_form_password_input(password)
 
-        chromium_page.goto('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/auth/registration')
+    # 2. Отправка формы
+    registration_page.click_registration_form_submit_button()
 
-        registration_email_input = chromium_page.get_by_test_id('registration-form-email-input').locator('input')
-        registration_email_input.fill('arman@gmail.com')
+    # 3. Явное ожидание перехода на Dashboard
+    dashboard_page.page.wait_for_url("**/dashboard", timeout=15000)
 
-        # Заполняем поле Username
-        registration_name_input = chromium_page.get_by_test_id('registration-form-username-input').locator('input')
-        registration_name_input.fill('arman')
+    # 4. Проверка элементов Dashboard
+    dashboard_page.is_dashboard_title_visible()
 
-        # Заполняем поле Password
-        password_input = chromium_page.get_by_test_id('registration-form-password-input').locator('input')
-        password_input.fill('password')
+    # 5. Скриншот для документации
+    dashboard_page.page.screenshot(path=f"results/{request.node.name}.png", full_page=True)
 
-        # Нажимаем на кнопку Registration
-        registration_button = chromium_page.get_by_test_id('registration-page-registration-button')
-        registration_button.click()
-
-        dashboard_title = chromium_page.get_by_test_id('dashboard-toolbar-title-text')
-        expect(dashboard_title).to_be_visible()
+    # 5. Дополнительно: скриншот для документации
+    dashboard_page.page.screenshot(path=f"screenshot_{username}.png", full_page=True)
