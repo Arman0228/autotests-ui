@@ -1,9 +1,11 @@
+from typing import Any, Generator
+
 import pytest  # Импортируем pytest
 from playwright.sync_api import Page, Playwright
 
 
 @pytest.fixture  # Объявляем фикстуру, по умолчанию скоуп function, то что нам нужно
-def chromium_page(playwright: Playwright) -> Page:  # Аннотируем возвращаемое фикстурой значение
+def chromium_page(playwright: Playwright) -> Generator[Page, Any, None]:  # Аннотируем возвращаемое фикстурой значение
         browser = playwright.chromium.launch(headless=False)
         yield browser.new_page()
         browser.close()
@@ -17,11 +19,11 @@ def initialize_browser_state(playwright: Playwright) -> Page:
     page.goto('https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/auth/registration')
 
     registration_email_input = page.get_by_test_id('registration-form-email-input').locator('input')
-    registration_email_input.fill('test@gmail.com')
+    registration_email_input.fill('username@gmail.com')
 
     # Заполняем поле Username
     registration_name_input = page.get_by_test_id('registration-form-username-input').locator('input')
-    registration_name_input.fill('test')
+    registration_name_input.fill('username')
 
     # Заполняем поле Password
     password_input = page.get_by_test_id('registration-form-password-input').locator('input')
