@@ -12,3 +12,5 @@ with sync_playwright() as playwright:
     expect(login_button).to_be_disabled()
 
     page.wait_for_timeout(5000)
+
+
