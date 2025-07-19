@@ -1,24 +1,21 @@
 import pytest
-from playwright.sync_api import expect
-from pages.login_page import LoginPage
 from pages.courses_list_page import CoursesListPage
 from pages.create_course_page import CreateCoursePage
 
 
 @pytest.mark.courses
 @pytest.mark.regression
-def test_create_course(login_page: LoginPage,
-                       create_course_page: CreateCoursePage,
-                       courses_list_page: CoursesListPage):
+def test_create_course(courses_list_page: CoursesListPage, create_course_page: CreateCoursePage):
 
     # 2. Переход на страницу создания курса
     create_course_page.visit("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/courses/create")
+
 
     # 3. Проверка элементов страницы
     create_course_page.check_visible_create_course_title()
     create_course_page.check_disabled_create_course_button()
     create_course_page.check_visible_image_preview_empty_view()
-    create_course_page.check_visible_image_upload_view()
+    create_course_page.check_visible_image_upload_view(is_image_uploaded=False)
 
     # 4. Проверка формы по умолчанию
     create_course_page.check_visible_create_course_form(
@@ -41,10 +38,10 @@ def test_create_course(login_page: LoginPage,
     # 7. Заполнение формы курса
     create_course_page.fill_create_course_form(
         title="Playwright",
-        estimated_time="2 weeks",
-        description="Playwright course description",
         max_score="100",
-        min_score="10"
+        min_score="10",
+        description="Playwright",
+        estimated_time="2 weeks"
     )
 
     # 8. Создание курса
@@ -53,7 +50,7 @@ def test_create_course(login_page: LoginPage,
     # 9. Проверка результатов
     courses_list_page.check_visible_courses_title()
     courses_list_page.check_visible_create_course_button()
-    courses_list_page.check_visible_course_card(
+    courses_list_page.course_view.check_visible(
         index=0,
         title="Playwright",
         max_score="100",
