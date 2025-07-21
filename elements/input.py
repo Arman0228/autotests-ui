@@ -4,7 +4,7 @@ from elements.base_element import BaseElement, expect
 
 class Input(BaseElement):
     def get_locator(self, **kwargs) -> Locator:
-        return super().get_locator(**kwargs).locator(input)
+        return super().get_locator(**kwargs).locator("input")
 
     def fill(self, value: str, **kwargs):
         locator = self.get_locator(**kwargs)

@@ -7,7 +7,7 @@ from elements.text import Text
 
 
 class CreateCourseExerciseFormComponent(BaseComponent):
-    def __init__(self, page: Page):
+    def __init__(self, page: Page, index: int):
         super().__init__(page)
 
         self.delete_exercise_button = Button(
