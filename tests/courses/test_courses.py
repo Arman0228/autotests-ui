@@ -3,10 +3,16 @@ import allure
 from pages.courses.courses_list_page import CoursesListPage
 from pages.courses.create_course_page import CreateCoursePage
 from tools.allure.tags import AllureTag
+from tools.allure.epics import AllureEpic
+from tools.allure.features import AllureFeature
+from tools.allure.srories import AllureStory
 
 @pytest.mark.courses
 @pytest.mark.regression
 @allure.tag(AllureTag.REGISTRATION, AllureTag.COURSES)
+@allure.epic(AllureEpic.LMS)
+@allure.feature(AllureFeature.COURSES)
+@allure.story(AllureStory.COURSES)
 class TestCourses:
     @allure.title('Check displayning of empty courses list')
     def test_empty_courses_list(self, courses_list_page: CoursesListPage):
