@@ -6,6 +6,7 @@ from tools.allure.tags import AllureTag
 from tools.allure.epics import AllureEpic
 from tools.allure.features import AllureFeature
 from tools.allure.srories import AllureStory
+from allure_commons.types import Severity
 
 @pytest.mark.courses
 @pytest.mark.regression
@@ -15,6 +16,7 @@ from tools.allure.srories import AllureStory
 @allure.story(AllureStory.COURSES)
 class TestCourses:
     @allure.title('Check displayning of empty courses list')
+    @allure.severity(Severity.NORMAL)
     def test_empty_courses_list(self, courses_list_page: CoursesListPage):
         courses_list_page.visit("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/courses")
 
@@ -25,6 +27,7 @@ class TestCourses:
         courses_list_page.check_visible_empty_view()
 
     @allure.title('Create course')
+    @allure.severity(Severity.CRITICAL)
     def test_create_course(self, courses_list_page: CoursesListPage, create_course_page: CreateCoursePage):
         create_course_page.visit("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/courses/create")
         create_course_page.create_course_toolbar_view.check_visible()
