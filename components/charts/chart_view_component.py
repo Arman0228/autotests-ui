@@ -1,27 +1,19 @@
-import re
-
-import allure
 from playwright.sync_api import Page
 
 from components.base_component import BaseComponent
-from elements.button import Button
+from elements.image import Image
 from elements.text import Text
 
 
-class CoursesListToolbarViewComponent(BaseComponent):
-    def __init__(self, page: Page):
+class ChartViewComponent(BaseComponent):
+    def __init__(self, page: Page, identifier: str, chart_type: str):
         super().__init__(page)
 
-        self.title = Text(page, 'courses-list-toolbar-title-text', 'Title')
-        self.create_course_button = Button(page, 'courses-list-toolbar-create-course-button', 'Create course')
+        self.title = Text(page, f'{identifier}-widget-title-text', 'Title')
+        self.chart = Image(page, f'{identifier}-{chart_type}-chart', 'Chart')
 
-    @allure.step("Check visible courses list toolbar view")
-    def check_visible(self):
+    def check_visible(self, title: str):
         self.title.check_visible()
-        self.title.check_have_text('Courses')
+        self.title.check_have_text(title)
 
-        self.create_course_button.check_visible()
-
-    def click_create_course_button(self):
-        self.create_course_button.click()
-        self.check_current_url(re.compile(".*/#/courses/create"))
+        self.chart.check_visible()
