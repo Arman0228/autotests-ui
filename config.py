@@ -11,16 +11,19 @@ class Browser(str, Enum):
 
 
 class TestUser(BaseModel):
+    model_config = SettingsConfigDict(env_prefix="TEST_USER")
     email: EmailStr
     username: str
     password: str
 
 
 class TestData(BaseModel):
+    model_config = SettingsConfigDict(env_prefix="TEST_DATA")
     image_png_file: FilePath
 
 
 class Settings(BaseSettings):
+
     model_config = SettingsConfigDict(
         env_file=".env",  # Указываем, из какого файла читать настройки
         env_file_encoding="utf-8",  # Указываем кодировку файла
@@ -35,6 +38,9 @@ class Settings(BaseSettings):
     videos_dir: DirectoryPath
     tracing_dir: DirectoryPath
     browser_state_file: FilePath
+
+    def get_base_url(self) -> str:
+        return f"{self.app_url}/"
 
     @classmethod
     def initialize(cls) -> Self:
