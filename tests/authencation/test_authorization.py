@@ -30,22 +30,13 @@ class TestAuthorization:
     @allure.tag(AllureTag.USER_LOGIN)
     @allure.title('User login with correct email and password')
     @allure.severity(Severity.BLOCKER)
-    @pytest.mark.parametrize(
-        "email, password",
-        [
-            ("user.name@gmail.com", "password"),
-            ("user.name@gmail.com", "  "),
-            ("  ", "password")
-        ]
-    )
 
     def test_successful_authorization(
             self,
             login_page: LoginPage,
             dashboard_page: DashboardPage,
-            registration_page: RegistrationPage,
-            email: str,
-            password: str,
+            registration_page: RegistrationPage
+
     ):
         registration_page.visit(AppRoute.REGISTRATION)
         registration_page.registration_form.fill(
