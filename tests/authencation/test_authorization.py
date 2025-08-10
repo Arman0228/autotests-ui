@@ -1,3 +1,5 @@
+from tokenize import group
+
 import pytest
 import allure
 
@@ -65,9 +67,7 @@ class TestAuthorization:
         dashboard_page.navbar.check_visible(settings.test_user.username)
         dashboard_page.sidebar.check_visible()
 
-    @allure.tag(AllureTag.USER_LOGIN)
-    @allure.title('User login with wrong email or password')
-    @allure.severity(Severity.CRITICAL)
+    @pytest.mark.xdist_group(name="authorization-group")
     @pytest.mark.parametrize(
         "email, password",
         [
@@ -76,6 +76,9 @@ class TestAuthorization:
             ("  ", "password")
         ]
     )
+    @allure.tag(AllureTag.USER_LOGIN)
+    @allure.title('User login with wrong email or password')
+    @allure.severity(Severity.CRITICAL)
     def test_wrong_email_or_password_authorization(self,login_page: LoginPage, email: str, password: str):
 
         login_page.visit(AppRoute.LOGIN)
