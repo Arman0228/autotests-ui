@@ -1,6 +1,6 @@
 import sys
-from sys import platform
 
+import platform
 from config import settings
 
 
